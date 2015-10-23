@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Server.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="UserToken" Type="System.String" Scope="User">
+      <Value Profile="(Default)">tgpr3s0rceoqvxju</Value>
+    </Setting>
+    <Setting Name="UserSecret" Type="System.String" Scope="User">
+      <Value Profile="(Default)">kp0hhwnwxo8p1r5</Value>
+    </Setting>
+    <Setting Name="REMOTE_IP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.1.100</Value>
+    </Setting>
+    <Setting Name="PORT" Type="System.Int16" Scope="User">
+      <Value Profile="(Default)">12207</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
