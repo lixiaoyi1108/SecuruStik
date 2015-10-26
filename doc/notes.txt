@@ -1,0 +1,22 @@
+What I did
+
+ * add it all to git source control, except for some binary deps (use NuGet for those)
+ * import to Visual Studio 2015 and convert to .NET FW 4
+ * replace some deps with NuGet versions (for example SQLite had to be upgraded from .NET FW 2)
+ * change some build dir for ProxyReEncrypt.dll, although for no good reason
+ * added NUnit tests to SecuruStik project to run isolated basic functionality
+ * manually copied PRE.dll to SecuruStik output folder
+ * added SQLite using NuGet to SecuruStik project so that SQLite.Interop.dll is there too
+ * added log4net instead of home-built logging
+
+
+# What needs to be fixed
+
+ * C++ code probably rewrite
+ * remove empty exception handlers
+ * make it work on Mono
+
+## Configuration is a mess
+
+ * Where are static parameters stored (such as server URL)?
+ * Where are users settings stored (such as Dropbox token)?

@@ -18,7 +18,8 @@ namespace SecuruStik.DropBox
     public partial class DropBoxController
     {
         #region 0. Fields
-        
+        private log4net.ILog log = Tracer.GetClassLogger();
+
         #region 0.1 Dropbox Paths
 
         /// <summary>Dropbox Folder </summary>

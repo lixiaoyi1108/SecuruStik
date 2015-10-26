@@ -19,12 +19,23 @@ namespace SecuruStik.Exception
 {
     public class Tracer
     {
+        public static log4net.ILog GetClassLogger()
+        {
+            var stack = new StackTrace(false);
+            return log4net.LogManager.GetLogger(stack.GetFrame(1).GetMethod().DeclaringType);
+        }
+
+        private static log4net.ILog log = GetClassLogger();
+
         private readonly static String logfile = "./ErrMsg.log";
         /// <summary>
         /// Log event
         /// </summary>
         public static void Log( params String[] messages )
         {
+            log.Info(messages);
+
+            // TODO: replace this with log4net but figure out how to reuse current processes configuration/logger
             lock ( logfile )
             {
                 FileStream fs = new FileStream( Tracer.logfile , FileMode.Append , FileAccess.Write );
@@ -48,6 +59,8 @@ namespace SecuruStik.Exception
         }
         public static void Log( System.Exception inner , params String[] messages )
         {
+            log.Error(messages, inner);
+
             lock ( logfile )
             {
                 FileStream fs = new FileStream( Tracer.logfile , FileMode.Append , FileAccess.Write );

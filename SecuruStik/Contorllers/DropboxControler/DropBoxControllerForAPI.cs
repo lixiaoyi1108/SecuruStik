@@ -119,9 +119,6 @@ namespace SecuruStik.DropBox
                                 AppSetting.appSecret ,
                                 at.UserToken , at.UserSecret , null );
                 }
-            } catch ( SecuruStikException ex )
-            {
-                throw ex;
             } catch ( System.Exception ex )
             {
                 throw new SecuruStikException(

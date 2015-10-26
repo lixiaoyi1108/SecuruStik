@@ -9,7 +9,7 @@
       <Value Profile="(Default)">kp0hhwnwxo8p1r5</Value>
     </Setting>
     <Setting Name="REMOTE_IP" Type="System.String" Scope="User">
-      <Value Profile="(Default)">192.168.1.100</Value>
+      <Value Profile="(Default)">0.0.0.0</Value>
     </Setting>
     <Setting Name="PORT" Type="System.Int16" Scope="User">
       <Value Profile="(Default)">12207</Value>

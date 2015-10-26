@@ -119,8 +119,9 @@
     <Reference Include="DevComponents.DotNetBar2">
       <HintPath>..\..\Skin\DevComponents.DotNetBar2.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>..\..\Relative files\Lib\DropNet-master\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -201,6 +202,7 @@
     <None Include="DropNet\App.config" />
     <None Include="DropNet\obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <None Include="DropNet\packages.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

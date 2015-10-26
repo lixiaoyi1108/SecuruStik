@@ -157,6 +157,7 @@ unsigned char* Hash_point2bin( const EC_POINT *point )
  */
 PRE_API void PRE_Setup()
 {
+	PRE_err_init();
 	int ret;
 	params = new SecParams();
 
@@ -208,5 +209,7 @@ PRE_API void PRE_UnSetup()
 		delete(params);
 
 		alreadyUnSetuped++;
+		PRE_err_cleanup();
+		
 	}
 }

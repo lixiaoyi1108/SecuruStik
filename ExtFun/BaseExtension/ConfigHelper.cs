@@ -13,15 +13,57 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Configuration;
+using System.IO;
 
 namespace SecuruStik.BaseExtension
 {
     public static class ConfigHelper
     {
+        private static log4net.ILog log = Exception.Tracer.GetClassLogger();
+
+        public static string CustomConfigFile
+        {
+            get;
+            set;
+        }
+
+        public static Properties.Settings UserSettings {
+            get {
+                return Properties.Settings.Default;
+            }
+        }
+
+        public static string GetAppConfig(string Key)
+        {
+            log.Error(String.Format("GetAppConfig key={0} not implemented (move to Settings)", Key));
+            return null;
+        }
+
+        public static void UpdateAppConfig(String newKey, String newValue)
+        {
+            log.Error(String.Format("UpdateAppConfig deprecated, setting {0}={1}", newKey, newValue));
+        }
+        /*
+        private static Configuration OpenAppConfig()
+        {
+            if (CustomConfigFile != null)
+            {
+                ExeConfigurationFileMap map = new ExeConfigurationFileMap();
+                map.ExeConfigFilename = CustomConfigFile;
+                return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+            }
+            else
+            {
+                return ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoaming);
+            }
+        }
+
         public static String GetAppConfig( String strKey )
         {
-            String file = System.Windows.Forms.Application.ExecutablePath;
-            Configuration config = ConfigurationManager.OpenExeConfiguration( file );
+            Configuration config = OpenAppConfig();
+
+            // TODO: use system user profile folder as is default for ConfigurationManager?
+            
             foreach ( String key in config.AppSettings.Settings.AllKeys )
             {
                 if ( key == strKey )
@@ -34,8 +76,7 @@ namespace SecuruStik.BaseExtension
 
         public static void UpdateAppConfig( String newKey , String newValue )
         {
-            String file = System.Windows.Forms.Application.ExecutablePath;
-            Configuration config = ConfigurationManager.OpenExeConfiguration( file );
+            Configuration config = OpenAppConfig();
             bool exist = false;
             foreach ( string key in config.AppSettings.Settings.AllKeys )
             {
@@ -52,6 +93,6 @@ namespace SecuruStik.BaseExtension
             config.Save( ConfigurationSaveMode.Modified );
             ConfigurationManager.RefreshSection( "appSettings" );
         }
-
+        */
     }
 }

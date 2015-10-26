@@ -8,12 +8,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SecuruStik.Properties {
+namespace SecuruStik.BaseExtension.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -25,25 +25,25 @@ namespace SecuruStik.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("192.168.1.127")]
-        public string REMOTE_IP {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DropboxAuthUserToken {
             get {
-                return ((string)(this["REMOTE_IP"]));
+                return ((string)(this["DropboxAuthUserToken"]));
             }
             set {
-                this["REMOTE_IP"] = value;
+                this["DropboxAuthUserToken"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("12207")]
-        public short PORT {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DropboxAuthUserSecret {
             get {
-                return ((short)(this["PORT"]));
+                return ((string)(this["DropboxAuthUserSecret"]));
             }
             set {
-                this["PORT"] = value;
+                this["DropboxAuthUserSecret"] = value;
             }
         }
     }

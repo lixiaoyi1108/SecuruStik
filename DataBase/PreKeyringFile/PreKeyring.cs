@@ -26,6 +26,8 @@ namespace SecuruStik.DB
         #region 0.1 AccessToken & UserKey
 
         #region 0.1.1 AccessToken
+
+        // TODO: mention somewhere that this is for Dropbox OAuth access...
         private static String Node_AccessToken_UserToken = "AccessToken_UserToken";
         private static String Node_AccessToken_UserSecret = "AccessToken_UserSecret";
         private static AccessToken _accessToken = null;
@@ -35,28 +37,29 @@ namespace SecuruStik.DB
             {
                 if ( _accessToken == null )
                 {
-                    String _accessToken_UserToken = ConfigHelper.GetAppConfig( PreKeyring.Node_AccessToken_UserToken );
-                    String _accessToken_UserSecret = ConfigHelper.GetAppConfig( PreKeyring.Node_AccessToken_UserSecret ); 
-                    if ( String.IsNullOrEmpty(_accessToken_UserToken) ||
-                        String.IsNullOrEmpty(_accessToken_UserSecret) )
+                    if (String.IsNullOrEmpty(ConfigHelper.UserSettings.DropboxAuthUserToken) || String.IsNullOrEmpty(ConfigHelper.UserSettings.DropboxAuthUserSecret))
+                    {
                         return null;
+                    }
                     else
                     {
+                        var settings = ConfigHelper.UserSettings;
                         _accessToken = new AccessToken();
-                        _accessToken.UserToken = _accessToken_UserToken;
-                        _accessToken.UserSecret = _accessToken_UserSecret;
+                        _accessToken.UserToken = settings.DropboxAuthUserToken;
+                        _accessToken.UserSecret = settings.DropboxAuthUserSecret;
                     }
                 }
                 return _accessToken;                    
             }
             set 
             {
-                if ( _accessToken == null )
-                    _accessToken = new AccessToken();
+                if ( _accessToken == null ) _accessToken = new AccessToken();
+                // don't know why it's making a copy here but whatever
                 _accessToken.UserToken = value.UserToken;
                 _accessToken.UserSecret = value.UserSecret;
-                ConfigHelper.UpdateAppConfig( PreKeyring.Node_AccessToken_UserToken,value.UserToken );
-                ConfigHelper.UpdateAppConfig( PreKeyring.Node_AccessToken_UserSecret,value.UserSecret );
+
+                ConfigHelper.UserSettings.DropboxAuthUserToken = value.UserToken;
+                ConfigHelper.UserSettings.DropboxAuthUserSecret = value.UserSecret;
             }
         }
         #endregion 0.1.1

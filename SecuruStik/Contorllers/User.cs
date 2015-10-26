@@ -19,7 +19,10 @@ namespace SecuruStik.Opt
 {
     public class DBox_User
     {
+
         #region 0. Fields( Controllers )
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public DropBoxController dropBoxController;
         private ProxyServerController proxyServerController;
         private ShareTaskWorker ShareWorker;
@@ -45,10 +48,13 @@ namespace SecuruStik.Opt
                 this.dropBoxController ,
                 this.proxyServerController );
         }
+
+        // TODO: destructors must follow some rules. Did you mean to use a finalizer instead?
         ~DBox_User()
         {
             this.Close();
         }
+
         public void Close()
         {
             try
@@ -56,7 +62,10 @@ namespace SecuruStik.Opt
                 ProxyReEncryption.UnSetup();
                 this.proxyServerController.UnInit();
             }
-            catch ( System.Exception ) { }
+            catch ( System.Exception e )
+            {
+                log.Error("Closing DBox_User", e);
+            }
 
         }
 
@@ -66,65 +75,46 @@ namespace SecuruStik.Opt
 
         private void Init_DropBoxController()
         {
-            try
+            log.Info("Initializing Dropbox Controller...");
+            this.dropBoxController = new DropBoxController();
+            if (!this.dropBoxController.Login())
             {
-                this.dropBoxController = new DropBoxController();
-                if ( this.dropBoxController.Login() == false )
-                    Process.GetCurrentProcess().Kill();
-            } catch ( SecuruStikException ex )
-            {
-                throw ex;
-            } catch ( System.Exception ex )
-            {
-                throw new SecuruStikException( SecuruStikExceptionType.Init_DropBoxController , "Failed to initial DropBoxController" , ex );
+                // TODO: WTF
+                Process.GetCurrentProcess().Kill();
             }
         }
+
         private void Init_ProxyServerController()
         {
-            try
-            {
-                proxyServerController = new ProxyServerController( this.dropBoxController.Email );
-            } catch ( SecuruStikException ex )
-            {
-                throw ex;
-            }catch (System.Exception ex)
-            {
-                throw new SecuruStikException( SecuruStikExceptionType.Init_DropBoxController , "Failed to initial ProxyServerController" , ex );
-            }
+            log.Info("Initializing Proxy Server Controller");
+            proxyServerController = new ProxyServerController( this.dropBoxController.Email );
         }
+
         private void Init_UserKey()
         {
-            try
-            {
-                UserKey userKey = PreKeyring.UserKey;
+            log.Info("Initializing User Key");
+            UserKey userKey = PreKeyring.UserKey;
 
-                if ( userKey == null )
-                {
-                    this.ReGenUserKey();
+            if ( userKey == null )
+            {
+                this.ReGenUserKey();
+                this.PublishPK();
+            }
+            else 
+            {
+                this.PK = new Protocal.PublicKey(
+                    id: this.dropBoxController.Email ,
+                    pk1: userKey.PK1 ,
+                    pk2: userKey.PK2 );
+
+                if ( !userKey.IsPublicized )
                     this.PublishPK();
-                }
-                else 
-                {
-                    this.PK = new Protocal.PublicKey(
-                        id: this.dropBoxController.Email ,
-                        pk1: userKey.PK1 ,
-                        pk2: userKey.PK2 );
-
-                    if ( !userKey.IsPublicized )
-                        this.PublishPK();
-                }
-            }catch ( SecuruStikException ex )
-            {
-                throw ex;
-            } 
-            catch (System.Exception ex)
-            {
-                throw new SecuruStikException( SecuruStikExceptionType.Init_UserKey , "Failed to initial UserKey" , ex );
             }
         }
 
         private void Init_Environment()
         {
+            /*
             try
             {
                 if ( !AppSetting.IsInited )
@@ -139,6 +129,7 @@ namespace SecuruStik.Opt
             {
                 throw new SecuruStikException( SecuruStikExceptionType.Init_Environment , "Failed to initial environment" , ex );
             }
+            */
         }
         private void Init_ShellExtension()
         {
@@ -154,7 +145,7 @@ namespace SecuruStik.Opt
             } catch ( System.Exception ex ){}
             ComRegisterHelper.Register( AppSetting.AppDataFolder_ShellExtensionsFullPath );
         }
-        private void Init_CreateShortCuts()
+        private void Init_CreateShortcuts()
         {
              ShortcutUnit[] shortcutList = new ShortcutUnit[] { 
                  new ShortcutUnit( AppSetting.Shortcut_Desktop , AppSetting.AppFullPath , AppSetting.App_IconPath , AppSetting.Description ) ,
@@ -187,6 +178,7 @@ namespace SecuruStik.Opt
         }
         private void ReStartExplorer()
         {
+            // TODO: WTF
             //Restart the explorer
             Process[] process = Process.GetProcesses();
             //var p = (from proc in process

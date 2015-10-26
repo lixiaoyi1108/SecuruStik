@@ -11,6 +11,8 @@ namespace SecuruStik.PRE
 {
     public partial class VelostiScsi
     {
+        private log4net.ILog log = Exception.Tracer.GetClassLogger();
+
         private void TaskWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             while ( VelostiScsi.TaskCount != 0 && VelostiScsi.IsPlugin_PubDrive)
@@ -22,8 +24,9 @@ namespace SecuruStik.PRE
                     this.RunLoopBackTool();
                     VelostiScsi.CurrentTask = null;
                 }
-                catch (System.Exception)
+                catch (System.Exception ex)
                 {
+                    log.Error("Worker encountered an error", ex);
                     this.Error();
                 }
             }
@@ -33,16 +36,19 @@ namespace SecuruStik.PRE
             this.IsBusy = false;
             SecuruStikMessageQueue.SendMessage_Sync_End();
         }
+
         private String GenerateKey()
         {
             this.Aes.GenerateKey();
             return BinaryStream.ByteArrayToHexString( this.Aes.Key );
         }
+
         private void WriteKeyFile()
         {
             String key = Regex.Replace( VelostiScsi.CurrentTask.Key , @"(.{2})" , "$1 " );
             File.WriteAllText( VelostiScsi.KeyFile , key , Encoding.ASCII );
         }
+
         private void GetNextTask()
         {
             if ( VelostiScsi.EncryptWaitingCount == 0 && VelostiScsi.DecryptWaitingCount == 0) return;
@@ -58,6 +64,7 @@ namespace SecuruStik.PRE
                     this.GetNextDecryptTask();
             }
         }
+
         private void GetNextEncryptTask()
         {
             VelostiScsi.CurrentTask = VelostiScsi.EncryptWaitingList[0];
@@ -70,6 +77,7 @@ namespace SecuruStik.PRE
             }
             VelostiScsi.CurrentTask.Key = this.GenerateKey();
         }
+
         private void GetNextDecryptTask()
         {
             VelostiScsi.CurrentTask = VelostiScsi.DecryptWaitingList[0];
@@ -81,12 +89,14 @@ namespace SecuruStik.PRE
                 VelostiScsi.DecryptWaitingList.Remove( VelostiScsi.CurrentTask );
             }
         }
+
         private void RecordSpeed()
         {
             VelostiScsi.Speed = 0.1 * VelostiScsi.Speed + 
                 0.9 * CurrentTask.Size / (1024*1024) / ( this.StopWatch.ElapsedMilliseconds / 1000.0 );
             this.StopWatch.Reset();
         }
+
         private void RunLoopBackTool()
         {
             if ( VelostiScsi.CurrentTask.TaskType == TaskType.Encrypt )
@@ -94,6 +104,7 @@ namespace SecuruStik.PRE
             else
                 RunLoopBackTool_Dec();
         }
+
         private void RunLoopBackTool_Enc()
         {
             String batArguments = String.Format("{0} \"{1}\" \"{2}\" \"{3}\" \"{4}\" ",
@@ -119,6 +130,7 @@ namespace SecuruStik.PRE
                 this.EncryptError();
             }
         }
+
         private void RunLoopBackTool_Dec()
         {
             String batArguments = String.Format("{0} \"{1}\" \"{2}\" \"{3}\" \"{4}\" ",
@@ -141,6 +153,7 @@ namespace SecuruStik.PRE
                 this.DecryptError();
             }
         }
+
         public void AddDecryptTask(String fileFullPath_Dropbox, String fileFullPath_Local, String cryptTextHash,UInt64 fileSize, String Key)
         {
             TaskUnit task = new TaskUnit(fileFullPath_Local, fileFullPath_Dropbox, Key, size:fileSize,hashValueOfCryptotext: cryptTextHash);
@@ -149,6 +162,7 @@ namespace SecuruStik.PRE
             VelostiScsi.DecryptWaitingList.Sort();
             this.StartWork();
         }
+
         public void AddEncryptTask( String fileFullPath_Local , String fileFullPath_Dropbox , String hashValue_Local , UInt64 fileSize )
         {
             TaskUnit task = new TaskUnit(fileFullPath_Local, fileFullPath_Dropbox, size:fileSize , hashValueOfPlaintext: hashValue_Local);
@@ -157,6 +171,7 @@ namespace SecuruStik.PRE
             VelostiScsi.EncryptWaitingList.Sort();
             this.StartWork();
         }
+
         private void StartWork()
         {
             if (!this.IsBusy)
@@ -171,6 +186,7 @@ namespace SecuruStik.PRE
                 this.Worker.RunWorkerAsync();
             }
         }
+
         public Boolean IsWaitingOrEncrypting(String filePath_Dropbox)
         {
             if ( VelostiScsi.CurrentTask == null )
@@ -186,6 +202,7 @@ namespace SecuruStik.PRE
             else
                 return VelostiScsi.EncryptWaitingList.Exists( etw => etw.EncryptedFilePath == filePath_Dropbox );
         }
+
         public Boolean IsWaitingOrDecrypting(String filePath_Local)
         {
             if ( VelostiScsi.CurrentTask == null )
@@ -201,6 +218,7 @@ namespace SecuruStik.PRE
             else
                 return VelostiScsi.DecryptWaitingList.Exists( dtw => dtw.PlaintextFilePath == filePath_Local );
         }
+
         private void UpdateTaskInfo()
         {
             PreKeyring.FileInfo_Update
@@ -227,6 +245,7 @@ namespace SecuruStik.PRE
                 this.DecryptError();
             VelostiScsi.CurrentTask = null;
         }
+
         private void EncryptError()
         {
             try
@@ -236,9 +255,12 @@ namespace SecuruStik.PRE
                     File.Delete( VelostiScsi.CurrentTask.EncryptedFilePath );
                 //VelostiScsi.ErrorList.Add( VelostiScsi.CurrentTask );
                 VelostiScsi.EncryptWaitingList.Add(VelostiScsi.CurrentTask);
+            } catch (System.Exception ex) {
+                // TODO: why catch?
+                log.Error("EncryptError", ex);
             }
-            catch (System.Exception ex) { }
         }
+
         private void DecryptError()
         {
             try
@@ -248,8 +270,10 @@ namespace SecuruStik.PRE
                     File.Delete( VelostiScsi.CurrentTask.PlaintextFilePath );
                 //VelostiScsi.ErrorList.Add( VelostiScsi.CurrentTask );
                 VelostiScsi.DecryptWaitingList.Add(VelostiScsi.CurrentTask);
+            } catch (System.Exception ex) {
+                // TODO: why catch?
+                log.Error("DecryptError", ex);
             }
-            catch (System.Exception ex){ }
         }
         #endregion 
     }
