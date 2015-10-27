@@ -7,7 +7,7 @@ using DevComponents.DotNetBar;
 using DropNet.Exceptions;
 using DropNet.Models;
 using SecuruStik.DB;
-using SecuruStik.Exception;
+using SecuruStik;
 using SecuruStik.MessageQueue;
 using SecuruStikSettings;
 
@@ -16,56 +16,41 @@ namespace SecuruStik.DropBox
     public partial class DropBoxController
     {
         #region 0. Fields
+
         private DropNet.DropNetClient client;
         public String AuthorizeUrl
         {
             get { return this.client.BuildAuthorizeUrl(); }
         }
 
-        private AccountInfo accountInfo = null;
+        private AccountInfo _accountInfo = null;
         public AccountInfo DropboxAccountInfo
         {
             get
             {
-                if (this.accountInfo == null)
-                    this.accountInfo = this.client.AccountInfo();
-                return accountInfo;
+                if (this._accountInfo == null)
+                    this._accountInfo = this.client.AccountInfo();
+                return _accountInfo;
             }
         }
-        private String email = null;
+
+        private String _email = null;
         public String Email
         {
             get
             {
-                if (email == null)
-                    email = this.DropboxAccountInfo.email;
-                return email;
+                if (_email == null)
+                    _email = this.DropboxAccountInfo.email;
+                return _email;
             }
         }
 
         private readonly int RetryTimes = 2;
 
-        #endregion 
+        #endregion
 
         #region 1. Authorization && Login
 
-        private Boolean GetToken()
-        {
-            try
-            {
-                this.client.GetToken();
-                return true;
-            } catch ( SecuruStikException ex )
-            {
-                throw ex;
-            } catch ( DropNet.Exceptions.DropboxException ex )
-            {
-                throw new SecuruStikException(
-                    SecuruStikExceptionType.DropBoxControl_GetToken ,
-                    "Failed to Get the Login token" ,
-                    ex );
-            }
-        }
         private Boolean GetAccessToken()
         {
             try
@@ -78,9 +63,7 @@ namespace SecuruStik.DropBox
                         UserSecret = userLogin.Secret
                     };
                 return true;
-            } catch ( SecuruStikException ex )
-            {
-                throw ex;
+
             } catch ( DropNet.Exceptions.DropboxException ex )
             {
                 throw new SecuruStikException(
@@ -89,6 +72,8 @@ namespace SecuruStik.DropBox
                     ex );
             }
         }
+
+        // TODO: this is displaying a Form which is not so good for unit testing or anything
         public Boolean Login()
         {
             try
@@ -100,6 +85,7 @@ namespace SecuruStik.DropBox
                 {
                     this.client = new DropNet.DropNetClient( AppSetting.apiKey , AppSetting.appSecret );
                     this.client.GetToken();
+
                     //Ask user to enter DropBox account and password
                     SecuruStikMessageQueue.SendMessage_Splash_Hiden();
                     AuthorizeForm af = new AuthorizeForm( this.AuthorizeUrl );
@@ -137,7 +123,7 @@ namespace SecuruStik.DropBox
         {
             try
             {
-                return this.client.GetMetaData(path);
+                return this.client.GetMetaData(path, null);
             }
             catch (DropboxException) { }
             return null;
@@ -149,7 +135,7 @@ namespace SecuruStik.DropBox
             {
                 if ( Directory.Exists( local_savePath ) == false )
                     Directory.CreateDirectory( local_savePath );
-                MetaData file = this.client.GetMetaData( dropbox_filePath );
+                MetaData file = this.client.GetMetaData( dropbox_filePath, null );
                 if ( file == null )
                     return false;
                 if ( file.Is_Dir == true )
@@ -191,7 +177,7 @@ namespace SecuruStik.DropBox
         {
             try
             {
-                MetaData file = this.client.GetMetaData(dropbox_filePath);
+                MetaData file = this.client.GetMetaData(dropbox_filePath, null);
                 if (file == null ||
                     file.Is_Dir == true ||
                     file.Is_Deleted ||
@@ -359,7 +345,7 @@ namespace SecuruStik.DropBox
                 List<DeltaEntry> deltaEntries = delta.Entries;
                 foreach (DeltaEntry deltaEntry in deltaEntries)
                 {
-                    MessageBox.Show(new Form { TopMost = true }, deltaEntry.MetaData.Path + " : " + client.GetMetaData(deltaEntry.MetaData.Path).Hash);//
+                    MessageBox.Show(new Form { TopMost = true }, deltaEntry.MetaData.Path + " : " + client.GetMetaData(deltaEntry.MetaData.Path, null).Hash);//
                 }
                 if (delta.Has_More == true)
                 {

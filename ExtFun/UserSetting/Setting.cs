@@ -48,7 +48,7 @@ namespace SecuruStikSettings
         public static String Name_ShareInfoFileExtension = "securu";
         public static String Name_SecuruStikFormClass = "SecuruStik_UIDesign_MainForm";
 
-        public static String Name_SecuruSitkFolder = AppSetting.AppName;
+        public static String Name_SecuruStikFolder = AppSetting.AppName;
         public static String Name_LocalSecFolder = "Home";
         public static String Name_DropBoxSecFolder = "SecuruStikPrivate";
         public static String Name_DownloadFolder = "Downloads";
@@ -104,7 +104,7 @@ namespace SecuruStikSettings
                     {
                         String securuStikPath = Path.Combine(
                             Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ) ,
-                            AppSetting.Name_SecuruSitkFolder );
+                            AppSetting.Name_SecuruStikFolder );
 
                         RegistryHelper.UpdateValue( Registry.CurrentUser , AppSetting.registryKey ,
                             AppSetting.registryValueName_SecuruStikPath , securuStikPath );
@@ -130,12 +130,12 @@ namespace SecuruStikSettings
         public static String Path_Local_SecuruStikShareInfoFolder= Path.Combine( AppSetting.Path_Local_SecuruStikFolder , AppSetting.Name_ShareInfoFolder );
         #endregion Registry
 
-        #region 3.3 ApplacationData folder path
+        #region 3.3 ApplicationData folder path
 
         /// <summary> ApplicationData path data(C:\\Users\\Hjnbuys\\AppData\\Roaming\\SecuruStik)</summary>
         public static String ApplicationData_SecuruStikPath = Path.Combine(
-            AppSetting.ApplicationDataPath ,
-            String.Format( @"{0}\{1}\{2}" , AppSetting.Company , AppSetting.AppName,"Tools" ) );
+            AppSetting.ApplicationDataPath,
+            String.Format( @"{0}\{1}\{2}", AppSetting.Company, AppSetting.AppName, "Tools" ) );
 
         public static String AppDataFolder_ShellExtensionsFullPath = Path.Combine( AppSetting.ApplicationData_SecuruStikPath , "ShellExtensions.dll" );
         public static String AppDataFolder_ShellExtensions_SharpdllFullPath = Path.Combine( AppSetting.ApplicationData_SecuruStikPath , "SharpShell.dll" );
@@ -146,7 +146,7 @@ namespace SecuruStikSettings
 
         #region 3.4 Shortcut
         //Shortcut path( 6 )
-        //Synchronization with CustonAction & SecuruStik.User.Init
+        //Synchronization with CustomAction & SecuruStik.User.Init
         public static String Shortcut_LinkName      = String.Format( "{0}.lnk" , AppSetting.AppName );
         public static String Shortcut_Desktop   = Path.Combine( AppSetting.Desktop , AppSetting.Shortcut_LinkName );
         public static String Shortcut_SendTo    = Path.Combine( AppSetting.SendTo , AppSetting.Shortcut_LinkName );

@@ -16,7 +16,7 @@ using System.Security.Cryptography;
 using System.Text;
 using SecuruStik.PRE.Base;
 using UserSetting.Key;
-using SecuruStik.Exception;
+using SecuruStik;
 
 namespace SecuruStik.PRE
 {
@@ -253,7 +253,7 @@ namespace SecuruStik.PRE
                 return null;
             }
         }
-        public static Boolean GetHashCode( String filePath , ref String hashValue )
+        public static bool GetHashCode( String filePath , ref String hashValue )
         {
             //Get the plaintextHash value (SHA-256) of the file
             try

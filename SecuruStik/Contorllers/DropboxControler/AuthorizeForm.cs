@@ -21,6 +21,7 @@ namespace SecuruStik.DropBox
             this.MouseMove+=new MouseEventHandler(Form_MouseMove);
             this.Shown +=new EventHandler(Form_Shown);
         }
+
         private void webBrowser_Login_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             this.webBrowser_login.Visible = true;
@@ -34,6 +35,7 @@ namespace SecuruStik.DropBox
                 this.Close();
             }
         }
+
         private void Form_Shown(object sender, EventArgs e)
         {
             this.TopLevel = true;

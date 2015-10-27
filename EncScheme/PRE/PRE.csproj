@@ -191,6 +191,10 @@
       <Project>{FD57C934-D31A-45C7-B812-43856E00F7D2}</Project>
       <Name>DataBase</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ExtFun\BaseExtension\BaseExtension.csproj">
+      <Project>{1394dcb6-e668-4cbc-8829-ece4e63e5528}</Project>
+      <Name>BaseExtension</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ExtFun\SecuruStikMessageQueue\SecuruStikMessageQueue.csproj">
       <Project>{415B75FF-E375-4407-99E8-DDDE8617FA91}</Project>
       <Name>SecuruStikMessageQueue</Name>
@@ -198,10 +202,6 @@
     <ProjectReference Include="..\..\ExtFun\UserSetting\UserConfig.csproj">
       <Project>{E44E241D-E08C-4805-9C75-898B01719071}</Project>
       <Name>UserConfig</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SecuruStikException\Exception.csproj">
-      <Project>{7560EB00-5128-43EC-963B-0A8B6AF13496}</Project>
-      <Name>Exception</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

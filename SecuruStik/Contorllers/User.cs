@@ -9,7 +9,7 @@ using SecuruStik.BaseExtension;
 using SecuruStik.Contorllers;
 using SecuruStik.DB;
 using SecuruStik.DropBox;
-using SecuruStik.Exception;
+using SecuruStik;
 using SecuruStik.PRE;
 using SecuruStik.Protocal;
 using SecuruStikSettings;
@@ -204,10 +204,12 @@ namespace SecuruStik.Opt
         {
             return this.ShareWorker.AddShareTask( id_to , filePath );
         }
+
         public void RequestSharingInfo()
         {
             this.proxyServerController.Request_GetSharingInfo();
         }
+
         public Boolean DownloadSharingFile(Protocal.SharingInfo si)
         {
             String copyRef = si.Reference;
@@ -242,14 +244,16 @@ namespace SecuruStik.Opt
                 String dropboxRemotePath = this.dropBoxController.SecuruStikFolder2RemoteDropboxPath( fi.FilePath );
                 this.dropBoxController.CopyAsync( copyRef , dropboxRemotePath );
             }
-            catch ( System.Exception )
+            catch ( System.Exception ex )
             {
+                log.ErrorFormat("DownloadSharingFile {0}", si.FileName, ex);
                 PreKeyring.SharingFile_Delete( si.Reference );
                 return false;
             }
             return true;
         }
-        public void ReceivePK( String id , String pk1 , String pk2 )
+
+        public void ReceivePK(string id , string pk1 , string pk2 )
         {
             this.ShareWorker.ReceivePKInfo( new PublicKey( id , pk1 , pk2 ) );
         }
@@ -276,8 +280,8 @@ namespace SecuruStik.Opt
                 SK2 = key.SK.X2 ,
                 IsPublicized = false
             };
-
         }
+
         private void PublishPK()
         {
             //Upload the pk to DropBox

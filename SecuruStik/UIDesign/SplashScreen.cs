@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Threading;
 using SecuruStik.Opt;
 using SecuruStik.BaseExtension;
-using SecuruStik.Exception;
+using SecuruStik;
 using System.Diagnostics;
 using SecuruStik.MessageQueue;
 using Microsoft;

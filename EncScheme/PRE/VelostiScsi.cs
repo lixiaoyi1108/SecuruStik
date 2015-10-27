@@ -11,7 +11,7 @@ namespace SecuruStik.PRE
 {
     public partial class VelostiScsi
     {
-        private log4net.ILog log = Exception.Tracer.GetClassLogger();
+        private log4net.ILog log = Tracer.GetClassLogger();
 
         private void TaskWorker_DoWork(object sender, DoWorkEventArgs e)
         {

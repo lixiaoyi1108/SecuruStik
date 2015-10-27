@@ -19,7 +19,7 @@ namespace SecuruStik.BaseExtension
 {
     public static class ConfigHelper
     {
-        private static log4net.ILog log = Exception.Tracer.GetClassLogger();
+        private static log4net.ILog log = Tracer.GetClassLogger();
 
         public static string CustomConfigFile
         {

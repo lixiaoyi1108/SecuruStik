@@ -195,10 +195,6 @@
       <Project>{1394DCB6-E668-4CBC-8829-ECE4E63E5528}</Project>
       <Name>BaseExtension</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SecuruStikException\Exception.csproj">
-      <Project>{7560EB00-5128-43EC-963B-0A8B6AF13496}</Project>
-      <Name>Exception</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.98.1\build\net40\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.98.1\build\net40\System.Data.SQLite.Core.targets')" />

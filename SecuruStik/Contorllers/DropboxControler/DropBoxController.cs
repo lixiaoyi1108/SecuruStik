@@ -9,7 +9,7 @@
  ***********************************************************************/
 using System;
 using System.IO;
-using SecuruStik.Exception;
+using SecuruStik;
 using SecuruStik.PRE;
 using SecuruStikSettings;
 
@@ -24,31 +24,37 @@ namespace SecuruStik.DropBox
 
         /// <summary>Dropbox Folder </summary>
         private DropBoxService dropBoxService;
+
         public static String DropBoxFolder
         {
             get { return DropBoxService.DropBoxFolderLocation; }
         }
+
         public static String DropBox_SecuruStikFolder
         {
-            get { return  Path.Combine( DropBoxController.DropBoxFolder, AppSetting.Name_SecuruSitkFolder) ; }
+            get { return  Path.Combine( DropBoxController.DropBoxFolder, AppSetting.Name_SecuruStikFolder) ; }
         }
+
         public static String DropBox_SecFolder
-        { get { return Path.GetFullPath( Path.Combine( DropBoxController.DropBox_SecuruStikFolder , AppSetting.Name_DropBoxSecFolder ) ); } }
+        {
+            get { return Path.GetFullPath(Path.Combine(DropBoxController.DropBox_SecuruStikFolder, AppSetting.Name_DropBoxSecFolder)); }
+        }
+
         public static String DropBox_DownloadFolder
         {
-            get
-            {
-                return Path.GetFullPath( Path.Combine( DropBoxController.DropBox_SecuruStikFolder , AppSetting.Name_DownloadFolder ) );
-            }
+            get {  return Path.GetFullPath(Path.Combine(DropBoxController.DropBox_SecuruStikFolder, AppSetting.Name_DownloadFolder)); }
         }
+
         public static String DropBox_ShareInfoFolder
         {
             get { return Path.GetFullPath( Path.Combine( DropBoxController.DropBox_SecuruStikFolder , AppSetting.Name_ShareInfoFolder ) ); }
         }
+
         public static String Dropbox_PKFolder
         {
             get { return Path.GetFullPath( Path.Combine( DropBoxController.DropBox_SecuruStikFolder , "" ) ); }
         }
+
         #endregion Dropbox Paths
 
         #region 0.2 Local Paths
@@ -141,6 +147,7 @@ namespace SecuruStik.DropBox
         #endregion 
 
         #region 3. Dropbox path map to SecFolder path
+
         /// <summary>
         /// Translate path from local SecuruStik path to dropbox SecuruStik path
         /// Example:
@@ -149,6 +156,7 @@ namespace SecuruStik.DropBox
         /// </summary>
         public String SecuruStikFolder2DropboxSecuruStikFolder( String localPath )
         {
+            log.Debug("SSF2DSSF " + localPath);
             String fullPath = Path.GetFullPath( localPath );
             String OldRoot = String.Empty;
             String NewRoot = String.Empty;
@@ -165,11 +173,15 @@ namespace SecuruStik.DropBox
             String DropBoxPath = fullPath.Replace( OldRoot , NewRoot ).Replace( '\\' , '/' );
             return Path.GetFullPath(DropBoxPath);
         }
+
         /// <summary>
         /// Translate path from dropbox-SecuruStik path to local-SecuruStik path
         /// </summary>
         public String DropboxSecuruStikFolder2SecuruStikFolder( String dropBoxPath )
         {
+            // WTF is this method doing the same thing as the above??
+            log.Debug("DSSF2SSF " + dropBoxPath);
+
             String fullPath = Path.GetFullPath( dropBoxPath );
             String OldRoot = String.Empty;
             String NewRoot = String.Empty;
@@ -186,6 +198,7 @@ namespace SecuruStik.DropBox
             String LocalPath = fullPath.Replace( OldRoot , NewRoot ).Replace( '\\' , '/' );
             return Path.GetFullPath(LocalPath);
         }
+
         public String SecuruStikFolder2RemoteDropboxPath( String localPath )
         {
             String fullPath = Path.GetFullPath( localPath );
@@ -195,14 +208,14 @@ namespace SecuruStik.DropBox
             {
                 OldRoot = DropBoxController.Local_SecFolder;
                 NewRoot = String.Format("/{0}/{1}",
-                    AppSetting.Name_SecuruSitkFolder,
+                    AppSetting.Name_SecuruStikFolder,
                     AppSetting.Name_DropBoxSecFolder);
             }
             else
             {
                 OldRoot = DropBoxController.Local_SecuruStikFolder;
                 NewRoot = String.Format( "/{0}" ,
-                    AppSetting.Name_SecuruSitkFolder );
+                    AppSetting.Name_SecuruStikFolder );
             }
             String DropBoxPath = localPath.Replace( OldRoot , NewRoot ).Replace( '\\' , '/' );
             return DropBoxPath;

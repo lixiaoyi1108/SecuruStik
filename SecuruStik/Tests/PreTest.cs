@@ -12,12 +12,20 @@ namespace SecuruStik.Tests
     [TestFixture]
     class PreTest
     {
+
+        const string DROPBOX_USER_SECRET = "60e6dmakhbyz9bc";
+        const string DROPBOX_USER_TOKEN = "5f3ckqfwnhoxyxqy";
+
         [Test]
         [STAThread]
         public void Init()
         {
-            ConfigHelper.CustomConfigFile = "SecuruStik.exe.config";
-            var c = PreKeyring.AccessToken;
+            // unable to read application's config from VS Test runner (different app/process name)
+            ConfigHelper.UserSettings.DropboxAuthUserSecret = DROPBOX_USER_SECRET;
+            ConfigHelper.UserSettings.DropboxAuthUserToken = DROPBOX_USER_TOKEN;
+
+            log4net.Config.XmlConfigurator.Configure(new System.IO.FileInfo("log4net.config"));
+
             DBox_User dx = new DBox_User();
         }
     }

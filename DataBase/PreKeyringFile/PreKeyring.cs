@@ -15,7 +15,7 @@ using System.IO;
 using SecuruStik.DB.Base;
 using SecuruStik.BaseExtension;
 using System.Data;
-using SecuruStik.Exception;
+using SecuruStik;
 
 namespace SecuruStik.DB
 {
@@ -60,6 +60,7 @@ namespace SecuruStik.DB
 
                 ConfigHelper.UserSettings.DropboxAuthUserToken = value.UserToken;
                 ConfigHelper.UserSettings.DropboxAuthUserSecret = value.UserSecret;
+                ConfigHelper.UserSettings.Save();
             }
         }
         #endregion 0.1.1

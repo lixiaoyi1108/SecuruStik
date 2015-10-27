@@ -21,6 +21,7 @@ namespace SecuruStik.DB
         public String UserToken;
         public String UserSecret;
     }
+
     public class UserKey
     {
         public String PK1;
@@ -29,6 +30,7 @@ namespace SecuruStik.DB
         public String SK2;
         public Boolean IsPublicized;
     }
+
     //Store in the database
     public class FileMetaData
     {
@@ -38,6 +40,7 @@ namespace SecuruStik.DB
         [Field( MaxSize = 100 )]public String PlainTextHash;
         [Field( MaxSize = 100 )]public String CryptTextHash;
     }
+
     public class SharingInfo
     {
         [Field( MaxSize = 300 )]public String CopyRef;
@@ -49,19 +52,21 @@ namespace SecuruStik.DB
         [Field( MaxSize = 200 )]public String CKEY_U;
         [Field( MaxSize = 200 )]public String CKEY_W;
     }
+
     #endregion Definitions
 
     #region 2. SQL statement
+
     /// <summary> Note: It needs to be modified only when the fields are changed.</summary>
     internal class SQLStatement
     {
+        // TODO: WTF, not using parameters?
         #region 2.1 FileMetaData
         public static String FileInfo_Insert
         {
             get
             {
                 String tableName = StructOpt.GetStructureName( typeof( FileMetaData ) );
-
                 return "INSERT INTO " + tableName + " VALUES('{0}','{1}','{2}','{3}','{4}')";
             }
         }
@@ -156,8 +161,9 @@ namespace SecuruStik.DB
     #endregion SQL statement
 
     #region 3. Attribute for recording the size of the field
+
     [System.AttributeUsage( AttributeTargets.Field )]
-    internal class Field:System.Attribute
+    internal class Field: System.Attribute
     {
         public int MaxSize;
         public Field()
