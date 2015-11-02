@@ -114,22 +114,30 @@ namespace SecuruStik.Opt
 
         private void Init_Environment()
         {
-            /*
+            
             try
             {
                 if ( !AppSetting.IsInited )
                 {
-                    Init_ShellExtension();  //Register the shell extension
-                    Init_CreateShortCuts(); //Create shortcuts
-                    Init_RegisterFileType();//register the file type ".securu"
-                    AppSetting.IsInited = true;
-                    ReStartExplorer();
+                    if (Platform.Shell == Platform.Name.Windows)
+                    {
+                        Init_ShellExtension();  //Register the shell extension
+                                                //Init_CreateShortcuts(); //Create shortcuts
+
+                        // needs admin
+                        //Init_RegisterFileType();//register the file type ".securu"
+
+                        AppSetting.IsInited = true;
+                    }
+                    // TODO: this is not user friendly at all
+                    //ReStartExplorer();
+                    // TODO: do this instead   https://msdn.microsoft.com/en-us/library/windows/desktop/cc144067%28v=vs.85%29.aspx#_shell_reg_shell_ext_handlers
                 }
             } catch ( System.Exception ex )
             {
                 throw new SecuruStikException( SecuruStikExceptionType.Init_Environment , "Failed to initial environment" , ex );
             }
-            */
+            
         }
         private void Init_ShellExtension()
         {
@@ -138,13 +146,11 @@ namespace SecuruStik.Opt
                 Directory.CreateDirectory( AppSetting.ApplicationData_SecuruStikPath );
             }
             //NOTE: The "SharpShell.dll" must locate in app folder
-            try
-            {
-                File.Copy( AppSetting.App_ShellExtension , AppSetting.AppDataFolder_ShellExtensionsFullPath , true );
-                File.Copy( AppSetting.App_ShellExtension_Sharpdll , AppSetting.AppDataFolder_ShellExtensions_SharpdllFullPath , true );
-            } catch ( System.Exception ex ){}
+            File.Copy( AppSetting.App_ShellExtension , AppSetting.AppDataFolder_ShellExtensionsFullPath , true );
+            File.Copy( AppSetting.App_ShellExtension_Sharpdll , AppSetting.AppDataFolder_ShellExtensions_SharpdllFullPath , true );
             ComRegisterHelper.Register( AppSetting.AppDataFolder_ShellExtensionsFullPath );
         }
+
         private void Init_CreateShortcuts()
         {
              ShortcutUnit[] shortcutList = new ShortcutUnit[] { 

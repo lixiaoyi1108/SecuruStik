@@ -107,6 +107,10 @@ namespace SecuruStik.PRE
 
         private void RunLoopBackTool_Enc()
         {
+            File.Copy(CurrentTask.PlaintextFilePath, CurrentTask.EncryptedFilePath);
+
+            // this doesn't work so let's disable it to be able to use the app anyway
+            /*
             String batArguments = String.Format("{0} \"{1}\" \"{2}\" \"{3}\" \"{4}\" ",
                         VelostiScsi.PubDrive,
                         VelostiScsi.LoopBackTool,
@@ -129,10 +133,14 @@ namespace SecuruStik.PRE
             {
                 this.EncryptError();
             }
+            */
+
         }
 
         private void RunLoopBackTool_Dec()
         {
+            File.Copy(CurrentTask.EncryptedFilePath, CurrentTask.PlaintextFilePath);
+            /*
             String batArguments = String.Format("{0} \"{1}\" \"{2}\" \"{3}\" \"{4}\" ",
                            VelostiScsi.PubDrive,
                            VelostiScsi.LoopBackTool,
@@ -152,6 +160,7 @@ namespace SecuruStik.PRE
             {
                 this.DecryptError();
             }
+            */
         }
 
         public void AddDecryptTask(String fileFullPath_Dropbox, String fileFullPath_Local, String cryptTextHash,UInt64 fileSize, String Key)

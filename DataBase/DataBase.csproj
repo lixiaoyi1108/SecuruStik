@@ -127,6 +127,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a" />
+    <Reference Include="Mono.Data.Sqlite">
+      <HintPath>..\..\..\..\Program Files (x86)\Mono\lib\mono\4.5\Mono.Data.Sqlite.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />

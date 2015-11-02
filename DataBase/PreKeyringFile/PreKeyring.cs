@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 
-using System.Data.SQLite;
+using Mono.Data.Sqlite;
 using System.IO;
 using SecuruStik.DB.Base;
 using SecuruStik.BaseExtension;
@@ -25,7 +25,7 @@ namespace SecuruStik.DB
     public static class PreKeyring
     {
         #region 0. Fields
-        private static ILog log = LogManager.GetLogger(typeof(PreKeyring));
+        private static ILog log = Tracer.GetClassLogger();
 
         #region 0.1 AccessToken & UserKey
 
@@ -138,7 +138,7 @@ namespace SecuruStik.DB
         #endregion AccessToken & UserKey
 
         #region 0.2 DataBase & Table
-        private static SQLiteConnection conn;
+        private static SqliteConnection conn;
         private static string connectString;
         private static Type[] TableName = 
         {
@@ -155,9 +155,9 @@ namespace SecuruStik.DB
             try
             {
                 log.Debug("Opening SQL connection...");   
-                PreKeyring.conn = new SQLiteConnection();
+                PreKeyring.conn = new SqliteConnection();
 
-                SQLiteConnectionStringBuilder connStr = new SQLiteConnectionStringBuilder();
+                SqliteConnectionStringBuilder connStr = new SqliteConnectionStringBuilder();
                 connStr.DataSource = Config.PrekeyringFile_Path;
                 //connStr.Password = Config.PrekeyringFile_Password;
                 PreKeyring.conn.ConnectionString = connStr.ToString();
@@ -168,12 +168,12 @@ namespace SecuruStik.DB
 
                 if ( File.Exists( Config.PrekeyringFile_Path ) == false )
                 {
-                    SQLiteConnection.CreateFile( Config.PrekeyringFile_Path );
+                    SqliteConnection.CreateFile( Config.PrekeyringFile_Path );
                     CreateTablesByStructures( PreKeyring.TableName );
                 }
                 conn.Open();
             }
-            catch ( SQLiteException ex )
+            catch ( SqliteException ex )
             {
                 SecuruStikException sex = new SecuruStikException( SecuruStikExceptionType.Init_Database,"SQLite - Create/Connect Failed." , ex );
                 throw sex;
@@ -216,7 +216,7 @@ namespace SecuruStik.DB
             try
             {
                 if (closeDB) PreKeyring.conn.Open();
-                using ( SQLiteCommand cmd = new SQLiteCommand() )
+                using ( SqliteCommand cmd = new SqliteCommand() )
                 {
                     cmd.Connection = PreKeyring.conn;
                     cmd.CommandText = SQL_CreateTable( s );
@@ -252,7 +252,7 @@ namespace SecuruStik.DB
                 try
                 {
                     if ( conn.State == ConnectionState.Closed ) conn.Open();
-                    using ( SQLiteCommand cmd = new SQLiteCommand() )
+                    using ( SqliteCommand cmd = new SqliteCommand() )
                     {
                         cmd.Connection = PreKeyring.conn;
                         cmd.CommandText = string.Format( SQLStatement.FileInfo_Insert ,
@@ -282,11 +282,11 @@ namespace SecuruStik.DB
                 try
                 {
                     if(conn.State == ConnectionState.Closed)conn.Open();
-                    using ( SQLiteCommand cmd = new SQLiteCommand() )
+                    using ( SqliteCommand cmd = new SqliteCommand() )
                     {
                         cmd.Connection = PreKeyring.conn;
                         cmd.CommandText = sql;
-                        SQLiteDataReader reader = cmd.ExecuteReader();
+                        SqliteDataReader reader = cmd.ExecuteReader();
                         reader.Read();
                         count = reader.GetInt32( 0 );
                         reader.Close();
@@ -323,7 +323,7 @@ namespace SecuruStik.DB
                             fi.PlainTextHash ,
                             fi.CryptTextHash );
                         if ( conn.State == ConnectionState.Closed ) conn.Open();
-                        using ( SQLiteCommand cmd = new SQLiteCommand() )
+                        using ( SqliteCommand cmd = new SqliteCommand() )
                         {
                             cmd.Connection = PreKeyring.conn;
                             cmd.CommandText = sql;
@@ -354,7 +354,7 @@ namespace SecuruStik.DB
                     {
                         String sql = string.Format( SQLStatement.FileInfo_Delete , fileFullPath );
                         conn.Open();
-                        using ( SQLiteCommand cmd = new SQLiteCommand() )
+                        using ( SqliteCommand cmd = new SqliteCommand() )
                         {
                             cmd.Connection = PreKeyring.conn;
                             cmd.CommandText = sql;
@@ -377,7 +377,7 @@ namespace SecuruStik.DB
             lock ( conn )
             {
                 if ( conn.State == ConnectionState.Closed ) conn.Open();
-                SQLiteCommand cmd = new SQLiteCommand();
+                SqliteCommand cmd = new SqliteCommand();
                 cmd.Connection = PreKeyring.conn;
                 foreach ( String filePath in filePaths )
                 {
@@ -413,11 +413,11 @@ namespace SecuruStik.DB
                 try
                 {
                     if ( conn.State == ConnectionState.Closed ) conn.Open();
-                    using ( SQLiteCommand cmd = new SQLiteCommand() )
+                    using ( SqliteCommand cmd = new SqliteCommand() )
                     {
                         cmd.Connection = PreKeyring.conn;
                         cmd.CommandText = string.Format( SQLStatement.FileInfo_Query , Path.GetFullPath( filePath ) );
-                        SQLiteDataReader reader = cmd.ExecuteReader();
+                        SqliteDataReader reader = cmd.ExecuteReader();
                         Boolean canRead = reader.Read();
                         if ( canRead == false )
                             return null;
@@ -449,7 +449,7 @@ namespace SecuruStik.DB
                 try
                 {
                     if ( conn.State == ConnectionState.Closed ) conn.Open();
-                    using ( SQLiteCommand cmd = new SQLiteCommand() )
+                    using ( SqliteCommand cmd = new SqliteCommand() )
                     {
                         cmd.Connection = PreKeyring.conn;
                         cmd.CommandText = string.Format( SQLStatement.SharingFile_Insert ,
@@ -481,11 +481,11 @@ namespace SecuruStik.DB
                 try
                 {
                     if ( conn.State == ConnectionState.Closed ) conn.Open();
-                    using ( SQLiteCommand cmd = new SQLiteCommand() )
+                    using ( SqliteCommand cmd = new SqliteCommand() )
                     {
                         cmd.Connection = PreKeyring.conn;
                         cmd.CommandText = sql;
-                        SQLiteDataReader reader = cmd.ExecuteReader();
+                        SqliteDataReader reader = cmd.ExecuteReader();
                         reader.Read();
                         count = reader.GetInt32( 0 );
                         reader.Close();
@@ -518,7 +518,7 @@ namespace SecuruStik.DB
                             sf.CKEY_U ,
                             sf.CKEY_W );
                         if ( conn.State == ConnectionState.Closed ) conn.Open();
-                        using ( SQLiteCommand cmd = new SQLiteCommand() )
+                        using ( SqliteCommand cmd = new SqliteCommand() )
                         {
                             cmd.Connection = PreKeyring.conn;
                             cmd.CommandText = sql;
@@ -542,7 +542,7 @@ namespace SecuruStik.DB
                     {
                         String sql = string.Format( SQLStatement.SharingFile_Delete , copyRef );
                         if ( conn.State == ConnectionState.Closed ) conn.Open();
-                        using ( SQLiteCommand cmd = new SQLiteCommand() )
+                        using ( SqliteCommand cmd = new SqliteCommand() )
                         {
                             cmd.Connection = PreKeyring.conn;
                             cmd.CommandText = sql;
@@ -567,7 +567,7 @@ namespace SecuruStik.DB
                         {
                             String sql = string.Format( SQLStatement.SharingFile_Delete , copyRef );
                             if ( conn.State == ConnectionState.Closed ) conn.Open();
-                            using ( SQLiteCommand cmd = new SQLiteCommand() )
+                            using ( SqliteCommand cmd = new SqliteCommand() )
                             {
                                 cmd.Connection = PreKeyring.conn;
                                 cmd.CommandText = sql;
@@ -585,11 +585,11 @@ namespace SecuruStik.DB
             lock ( conn )
             {
                 if ( conn.State == ConnectionState.Closed ) conn.Open();
-                using ( SQLiteCommand cmd = new SQLiteCommand() )
+                using ( SqliteCommand cmd = new SqliteCommand() )
                 {
                     cmd.Connection = PreKeyring.conn;
                     cmd.CommandText = string.Format( SQLStatement.SharingFile_Query , copyRef );
-                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    SqliteDataReader reader = cmd.ExecuteReader();
                     Boolean canRead = reader.Read();
                     if ( canRead == false )
                         return sf;
@@ -616,11 +616,11 @@ namespace SecuruStik.DB
             lock ( conn )
             {
                     if ( conn.State == ConnectionState.Closed ) conn.Open();
-                    using ( SQLiteCommand cmd = new SQLiteCommand() )
+                    using ( SqliteCommand cmd = new SqliteCommand() )
                     {
                         cmd.Connection = PreKeyring.conn;
                         cmd.CommandText = string.Format( SQLStatement.SharingFile_All );
-                        SQLiteDataReader reader = cmd.ExecuteReader();
+                        SqliteDataReader reader = cmd.ExecuteReader();
                         Boolean canRead;
                         sharingList = new List<SharingInfo>();
                         while ( ( canRead = reader.Read() ) == true )
@@ -654,11 +654,11 @@ namespace SecuruStik.DB
             try
             {
                 if ( conn.State == ConnectionState.Closed ) conn.Open();
-                using ( SQLiteCommand cmd = new SQLiteCommand() )
+                using ( SqliteCommand cmd = new SqliteCommand() )
                 {
                     cmd.Connection = PreKeyring.conn;
                     cmd.CommandText = sql;
-                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    SqliteDataReader reader = cmd.ExecuteReader();
                     reader.Read();
                     count = reader.GetInt32( 0 );
                     reader.Close();

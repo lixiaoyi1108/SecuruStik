@@ -218,9 +218,11 @@
     <Compile Include="Contorllers\DropboxControler\DropBoxController.cs" />
     <Compile Include="Contorllers\DropboxControler\DropBoxControllerForAPI.cs" />
     <Compile Include="Contorllers\DropboxControler\DropBoxControllerForFileSyn.cs" />
+    <Compile Include="Contorllers\DropboxControler\DropboxInstallError.cs" />
     <Compile Include="Contorllers\DropboxControler\DropBoxService.cs" />
     <Compile Include="Contorllers\ProxyServerControler\PublicKeyList.cs" />
     <Compile Include="ExtFun\RegisterHelper.cs" />
+    <Compile Include="Platform.cs" />
     <Compile Include="ShareTask\ShareTaskUnit.cs" />
     <Compile Include="ShareTask\ShareWorker.cs" />
     <Compile Include="Contorllers\User.cs" />

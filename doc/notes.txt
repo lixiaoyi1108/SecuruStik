@@ -17,9 +17,12 @@
 	* `catch (Exception e) { throw e }` must be deleted
 	* empty handlers in 1st phase should add logging and in 2nd phase would be removed and exceptions handled correctly
 	* sometimes they catch everything and return false. And then never check the return value anyway.
+ * fix duplicate code
  * less code == better
  * make it work on Mono
  * loopbacktool doesnt accept file paths with spaces (even when using ")
+ * build and paths seem to be pretty messy
+ * I bet it doesn't handle unicode paths properly
 
 ## Configuration is a mess
 
@@ -29,3 +32,13 @@
  TODO
 	- Properties.Settings goes to AppData\Local or something
 	  UserConfig.Setting uses 
+
+## Porting to OSX
+ + replaced System.Data.SQLite with Mono.Data.Sqlite
+ - will replace Win32 Window Messages with 0MQ (probably)
+ - need to compile C code on OSX too
+ - shell extensions of course must be completely replaced on OSX
+ - Dropbox integration on OSX
+ - Mono doesn't have browser in Windows Forms - dropbox auth must open an external browser
+    (or can integrate something with ObjC)
+

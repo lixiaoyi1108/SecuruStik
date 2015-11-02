@@ -9,23 +9,40 @@ namespace SecuruStik.MessageQueue
 {
     public class SecuruStikMessageQueue
     {
+        private static log4net.ILog log = log4net.LogManager.GetLogger(typeof(SecuruStikMessageQueue));
+
         public static String MainFormText = @"SecuruStik_UIDesign_MainForm";
         public static String SplashFormText = @"SecuruStikSplashScreen";
 
         private static Boolean SendMessageToSecuruStikForm( String msg )
         {
+#if WIN32_MQ
             return Win32API.SendMessage( msg , MainFormText );
+#else
+            log.WarnFormat("MQ ignored {0} to {1}", msg, MainFormText);
+            return true;
+#endif
         }
         private static Boolean PostMessageToSecuruStikForm( String msg )
         {
+#if WIN32_MQ
             return Win32API.PostMessage( msg , MainFormText );
+#else
+            log.WarnFormat("MQ ignored {0} to {1}", msg, MainFormText);
+            return true;
+#endif
         }
         private static Boolean SendMessageToSplashScreen( String msg )
         {
+#if WIN32_MQ
             return Win32API.SendMessage( msg , SplashFormText );
+#else
+            log.WarnFormat("MQ ignored {0} to {1}", msg, SplashFormText);
+            return true;
+#endif
         }
 
-        #region Send messages to MainForm
+#region Send messages to MainForm
         public static Boolean SendMessage_MoveToSecuruStik( String filePath )
         {
             return SendMessageToSecuruStikForm(
@@ -130,9 +147,9 @@ namespace SecuruStik.MessageQueue
             return SendMessageToSecuruStikForm(SecuruStikMessageType.Disconnect);
         }
 
-        #endregion
+#endregion
 
-        #region Send message to SplashForm
+#region Send message to SplashForm
         public static Boolean SendMessage_Splash_Show()
         {
             return SendMessageToSplashScreen( SecuruStikMessageType.Show );
@@ -141,8 +158,9 @@ namespace SecuruStik.MessageQueue
         {
             return SendMessageToSplashScreen( SecuruStikMessageType.Hiden );
         }
-        #endregion
+#endregion
     }
+
     public class SecuruStikMessageType
     {
         //File opt
