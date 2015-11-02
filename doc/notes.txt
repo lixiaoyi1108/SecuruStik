@@ -1,4 +1,4 @@
-What I did
+# What I did
 
  * add it all to git source control, except for some binary deps (use NuGet for those)
  * import to Visual Studio 2015 and convert to .NET FW 4
@@ -13,10 +13,19 @@ What I did
 # What needs to be fixed
 
  * C++ code probably rewrite
- * remove empty exception handlers
+ * exceptions
+	* `catch (Exception e) { throw e }` must be deleted
+	* empty handlers in 1st phase should add logging and in 2nd phase would be removed and exceptions handled correctly
+	* sometimes they catch everything and return false. And then never check the return value anyway.
+ * less code == better
  * make it work on Mono
+ * loopbacktool doesnt accept file paths with spaces (even when using ")
 
 ## Configuration is a mess
 
  * Where are static parameters stored (such as server URL)?
  * Where are users settings stored (such as Dropbox token)?
+ 
+ TODO
+	- Properties.Settings goes to AppData\Local or something
+	  UserConfig.Setting uses 

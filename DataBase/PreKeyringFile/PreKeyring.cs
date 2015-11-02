@@ -16,12 +16,16 @@ using SecuruStik.DB.Base;
 using SecuruStik.BaseExtension;
 using System.Data;
 using SecuruStik;
+using log4net;
 
 namespace SecuruStik.DB
 {
+    public class DBException: Exception { }
+
     public static class PreKeyring
     {
         #region 0. Fields
+        private static ILog log = LogManager.GetLogger(typeof(PreKeyring));
 
         #region 0.1 AccessToken & UserKey
 
@@ -102,8 +106,8 @@ namespace SecuruStik.DB
             }
             set 
             {
-                if ( PreKeyring._userKey == null )
-                    PreKeyring._userKey = new DB.UserKey();
+                if (_userKey == null )
+                    _userKey = new DB.UserKey();
                 _userKey.PK1 = value.PK1;
                 _userKey.PK2 = value.PK2;
                 _userKey.SK1 = value.SK1;
@@ -135,6 +139,7 @@ namespace SecuruStik.DB
 
         #region 0.2 DataBase & Table
         private static SQLiteConnection conn;
+        private static string connectString;
         private static Type[] TableName = 
         {
             typeof( FileMetaData ),
@@ -149,19 +154,22 @@ namespace SecuruStik.DB
         {
             try
             {
+                log.Debug("Opening SQL connection...");   
                 PreKeyring.conn = new SQLiteConnection();
 
                 SQLiteConnectionStringBuilder connStr = new SQLiteConnectionStringBuilder();
                 connStr.DataSource = Config.PrekeyringFile_Path;
                 //connStr.Password = Config.PrekeyringFile_Password;
                 PreKeyring.conn.ConnectionString = connStr.ToString();
+                connectString = connStr.ToString();
 
                 if ( Directory.Exists( Config.PrekeyringFile_Dir ) == false )
                     Directory.CreateDirectory( Config.PrekeyringFile_Dir );
+
                 if ( File.Exists( Config.PrekeyringFile_Path ) == false )
                 {
                     SQLiteConnection.CreateFile( Config.PrekeyringFile_Path );
-                    Boolean ret = CreateTablesByStructures( PreKeyring.TableName );
+                    CreateTablesByStructures( PreKeyring.TableName );
                 }
                 conn.Open();
             }
@@ -170,44 +178,44 @@ namespace SecuruStik.DB
                 SecuruStikException sex = new SecuruStikException( SecuruStikExceptionType.Init_Database,"SQLite - Create/Connect Failed." , ex );
                 throw sex;
             }
-            catch ( System.Exception ex )
-            {
-                throw ex;
-            }
             finally
             {
                 PreKeyring.conn.Close();
             }
         }
+
         public static void Close()
         {
             if ( PreKeyring.conn != null && PreKeyring.conn.State != ConnectionState.Closed )
                 PreKeyring.conn.Close();
         }
+
         #endregion Construction
 
         #region 2. Create Tables according to structures
         private static String SQL_CreateTable( Type s )
         {
             String sql = "CREATE TABLE " + StructOpt.GetStructureName( s ) + "(";
-            Dictionary<String , int> fileds = StructOpt.GetFieldInfo( s );
-            Dictionary<String , int>.Enumerator enumerator = fileds.GetEnumerator();
-            while ( enumerator.MoveNext() == true )
+            Dictionary<String , int> fields = StructOpt.GetFieldInfo( s );
+            Dictionary<String , int>.Enumerator enumerator = fields.GetEnumerator();
+            while ( enumerator.MoveNext() )
             {
                 KeyValuePair<String , int> field = enumerator.Current;
                 sql += string.Format( "{0} varchar({1})," , field.Key , field.Value );
             }
+            // this will fail if there are no fields but thats not normally happening
             return sql.Substring( 0 , sql.Length - 1 ) + ")";
         }
+
         /// <summary>
         /// Create the tables with struct's info.
         /// It doesn't need to be modified while modefying the structure
         /// </summary>
-        private static void CreateTableByStructure( Type s )
+        private static void CreateTableByStructure( Type s, bool closeDB = true )
         {
             try
             {
-                PreKeyring.conn.Open();
+                if (closeDB) PreKeyring.conn.Open();
                 using ( SQLiteCommand cmd = new SQLiteCommand() )
                 {
                     cmd.Connection = PreKeyring.conn;
@@ -215,42 +223,24 @@ namespace SecuruStik.DB
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch ( System.Exception ex )
-            {
-                throw ex;
-            }
             finally
             {
-                PreKeyring.conn.Close();
+                if (closeDB) PreKeyring.conn.Close();
             }
         }
-        private static Boolean CreateTablesByStructures( Type[] structs )
+        
+        private static void CreateTablesByStructures( Type[] structs )
         {
             try
             {
-                PreKeyring.conn.Open();
-                foreach ( Type s in structs )
-                {
-                    using ( SQLiteCommand cmd = new SQLiteCommand() )
-                    {
-                        cmd.Connection = PreKeyring.conn;
-                        cmd.CommandText = SQL_CreateTable( s );
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch ( System.Exception ex )
+                foreach (Type s in structs) CreateTableByStructure(s, false);
+            } finally
             {
-                throw ex;
+                conn.Close();
             }
-            finally
-            {
-                PreKeyring.conn.Close();
-            }
-            return true;
         }
-
-        #endregion Crate Tables
+        
+        #endregion Create Tables
 
         #region 3. Data opts
 
@@ -274,10 +264,14 @@ namespace SecuruStik.DB
                         cmd.ExecuteNonQuery();
                     }
                 }
-                catch ( System.Exception ){return false;}
+                catch ( Exception ){
+                    log.ErrorFormat("Inserting {0}", fi.FilePath);
+                    return false;
+                }
             }
             return true;
         }
+
         private static int GetRowsCountOfFilePath( String filePath )
         {
             /// <summary>Just for table "FileInfo"</summary>
@@ -299,7 +293,10 @@ namespace SecuruStik.DB
                     }
 
                 }
-                catch ( System.Exception ex ) { return -2; }
+                catch ( Exception ) {
+                    log.ErrorFormat("GetRowsCount of {0}", filePath);
+                    return -2;
+                }
             }
             return count;
         }
@@ -335,7 +332,9 @@ namespace SecuruStik.DB
                         }
                     }
                 }
-                catch ( System.Exception ){}
+                catch ( System.Exception ){
+                    log.ErrorFormat("Update {0}", fi.FilePath);
+                }
 
             }
             return true;
@@ -365,7 +364,10 @@ namespace SecuruStik.DB
                     }
 
                 }
-                catch ( System.Exception ){return false;}
+                catch ( Exception ){
+                    log.ErrorFormat("FileInfo delete {0}", filePath);
+                    return false;
+                }
             }
             
             return true;
@@ -396,6 +398,7 @@ namespace SecuruStik.DB
                     }
                     catch ( System.Exception )
                     {
+                        log.ErrorFormat("FileInfo delete {0}", filePath);
                         continue;
                     }
                 }
@@ -429,7 +432,10 @@ namespace SecuruStik.DB
                         }
                     }
                 }
-                catch ( System.Exception ) { return null; }
+                catch ( System.Exception ) {
+                    log.ErrorFormat("FileInfo query {0}", filePath);
+                    return null;
+                }
             }
             return fi;
         }
@@ -457,7 +463,10 @@ namespace SecuruStik.DB
                         cmd.ExecuteNonQuery();
                     }
                 }
-                catch ( System.Exception ){return false;}
+                catch ( System.Exception ){
+                    log.ErrorFormat("SharingFile insert {0}", sf.FileName);
+                    return false;
+                }
             }
            
             return true;
@@ -482,12 +491,15 @@ namespace SecuruStik.DB
                         reader.Close();
                     }
                 }
-                catch ( System.Exception ex ){return -2;}
+                catch ( Exception  ){
+                    log.ErrorFormat("ref={0}", copyRef);
+                    return -2;
+                }
             }
             
             return count;
         }
-        public static Boolean SharingFile_Update( SharingInfo sf )
+        public static void SharingFile_Update( SharingInfo sf )
         {
             if ( PreKeyring.SharingFile_Query( sf.CopyRef ) == null )
             {
@@ -497,8 +509,6 @@ namespace SecuruStik.DB
             {
                 lock ( PreKeyring.conn )
                 {
-                    try
-                    {
                         String sql = string.Format( SQLStatement.SharingFile_Update ,
                             sf.CopyRef ,
                             sf.FileName ,
@@ -512,25 +522,21 @@ namespace SecuruStik.DB
                         {
                             cmd.Connection = PreKeyring.conn;
                             cmd.CommandText = sql;
-                            if ( cmd.ExecuteNonQuery() != 1 )
-                                return false;
+                            if (cmd.ExecuteNonQuery() != 1)
+                                throw new DBException();
                         }
-                    }
-                    catch ( System.Exception){return false;}
                 }
                 
             }
-            return true;
         }
-        public static Boolean SharingFile_Delete( String copyRef )
+
+        public static void SharingFile_Delete( String copyRef )
         {
             lock ( conn )
             {
-                try
-                {
                     if ( PreKeyring.GetRowsCountOfCopyRef( copyRef ) == 0 )
                     {
-                        return false;
+                        return;
                     }
                     else
                     {
@@ -541,15 +547,11 @@ namespace SecuruStik.DB
                             cmd.Connection = PreKeyring.conn;
                             cmd.CommandText = sql;
                             if ( cmd.ExecuteNonQuery() != 1 )
-                                return false;
+                                throw new SecuruStikException("Unexpected SQL database outcome");
                         }
                     }
 
-                }
-                catch ( System.Exception ) { return false; }
             }
-            
-            return true;
         }
         public static void SharingFile_Delete( String[] copyRefs )
         {
@@ -557,8 +559,6 @@ namespace SecuruStik.DB
             {
                 foreach ( String copyRef in copyRefs )
                 {
-                    try
-                    {
                         if ( PreKeyring.GetRowsCountOfCopyRef( copyRef ) == 0 )
                         {
                             continue;
@@ -574,9 +574,6 @@ namespace SecuruStik.DB
                                 cmd.ExecuteNonQuery();
                             }
                         }
-
-                    }
-                    catch ( System.Exception ) { continue; }
                 }
                 
             }
@@ -587,32 +584,28 @@ namespace SecuruStik.DB
             //取出数据
             lock ( conn )
             {
-                try
+                if ( conn.State == ConnectionState.Closed ) conn.Open();
+                using ( SQLiteCommand cmd = new SQLiteCommand() )
                 {
-                    if ( conn.State == ConnectionState.Closed ) conn.Open();
-                    using ( SQLiteCommand cmd = new SQLiteCommand() )
+                    cmd.Connection = PreKeyring.conn;
+                    cmd.CommandText = string.Format( SQLStatement.SharingFile_Query , copyRef );
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    Boolean canRead = reader.Read();
+                    if ( canRead == false )
+                        return sf;
+                    else
                     {
-                        cmd.Connection = PreKeyring.conn;
-                        cmd.CommandText = string.Format( SQLStatement.SharingFile_Query , copyRef );
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-                        Boolean canRead = reader.Read();
-                        if ( canRead == false )
-                            return sf;
-                        else
-                        {
-                            sf = new SharingInfo();
-                            sf.CopyRef = reader.GetString( 0 );
-                            sf.FileName = reader.GetString( 1 );
-                            sf.ID_From = reader.GetString( 2 );
+                        sf = new SharingInfo();
+                        sf.CopyRef = reader.GetString( 0 );
+                        sf.FileName = reader.GetString( 1 );
+                        sf.ID_From = reader.GetString( 2 );
 
-                            sf.CKEY_E = reader.GetString( 3 );
-                            sf.CKEY_F = reader.GetString( 4 );
-                            sf.CKEY_U = reader.GetString( 5 );
-                            sf.CKEY_W = reader.GetString( 6 );
-                        }
+                        sf.CKEY_E = reader.GetString( 3 );
+                        sf.CKEY_F = reader.GetString( 4 );
+                        sf.CKEY_U = reader.GetString( 5 );
+                        sf.CKEY_W = reader.GetString( 6 );
                     }
                 }
-                catch ( System.Exception ex ){ return null; }
             }
             
             return sf;
@@ -622,8 +615,6 @@ namespace SecuruStik.DB
             List<SharingInfo> sharingList = null;
             lock ( conn )
             {
-                try
-                {
                     if ( conn.State == ConnectionState.Closed ) conn.Open();
                     using ( SQLiteCommand cmd = new SQLiteCommand() )
                     {
@@ -646,8 +637,6 @@ namespace SecuruStik.DB
                         }
                     }
                     return sharingList;
-                }
-                catch ( System.Exception ){return null;}
             }
             
         }

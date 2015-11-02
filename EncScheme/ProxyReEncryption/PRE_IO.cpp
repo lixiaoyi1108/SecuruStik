@@ -16,6 +16,7 @@
 #include <direct.h>
 #include <string.h>
 
+// DELETE
 int sizeOfInt = sizeof(int);
 /**
  * @name      PRE_printBlock

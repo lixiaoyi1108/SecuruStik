@@ -39,6 +39,7 @@ void mem_debug_begin()
 	CRYPTO_set_mem_debug_options(V_CRYPTO_MDEBUG_ALL);
 	CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ON);
 }
+
 void mem_debug_end()
 {
 	char *logFile = "leak.log";
@@ -63,6 +64,7 @@ int Setup_Test()
 	}
 	return 1;
 }
+
 int Hash_Test()
 {
 	int j = g_time;

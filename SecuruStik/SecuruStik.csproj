@@ -225,8 +225,6 @@
     <Compile Include="ShareTask\ShareWorker.cs" />
     <Compile Include="Contorllers\User.cs" />
     <Compile Include="Contorllers\ProxyServerControler\ProxyServerControler.cs" />
-    <Compile Include="Tests\DeviceTest.cs" />
-    <Compile Include="Tests\PreTest.cs" />
     <Compile Include="UIDesign\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
