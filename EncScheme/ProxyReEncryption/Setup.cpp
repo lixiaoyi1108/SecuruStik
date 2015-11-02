@@ -16,8 +16,8 @@
 #include<stdio.h>
 #include<string.h>
 
-#include<openssl\evp.h>
-#include "openssl\crypto.h"
+#include <openssl/evp.h>
+#include <openssl/crypto.h>
 
 #define HASH_1 1
 #define HASH_2 2

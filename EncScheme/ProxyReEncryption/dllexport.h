@@ -1,7 +1,7 @@
 #pragma once
-#include"PRE.h"
-#include"KeyGen.h"
-#include"Encrypt_Decrypt.h"
+#include "PRE.h"
+#include "KeyGen.h"
+#include "Encrypt_Decrypt.h"
 
 /************************************************************************/
 /* APIs export for dll                                                    */

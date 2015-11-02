@@ -12,11 +12,11 @@
 	* @brief	:	IO处理借口
     */
 #pragma once
-#include<stdio.h>
-#include "openssl\ec.h"
+#include <stdio.h>
+#include "openssl/ec.h"
 #include "KeyGen.h"
 #include "Encrypt_Decrypt.h"
-#include"PRE.h"
+#include "PRE.h"
 
 //print the block to console
 int PRE_IO_printBlock(char *m);

@@ -12,8 +12,8 @@
 	*brief	:	对程序功能进行单元测试
 	*/
 #define DEBUG
-#include<openssl\applink.c>
-#include "openssl\evp.h"
+#include <openssl/applink.c>
+#include <openssl/evp.h>
 #include"PRE.h"
 #include"Setup.h"
 #include"Encrypt_Decrypt.h"

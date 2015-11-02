@@ -11,9 +11,9 @@
 	
 	* @brief	:	Exception
 	*/
-#include<openssl\err.h>
-#include<time.h>
-#include<string.h>
+#include <openssl/err.h>
+#include <time.h>
+#include <string.h>
 #define ERR_BUF_SIZE 600//(>=120）
 #define DEBUG
 
@@ -45,7 +45,7 @@ unsigned long SetLastError(int ec)
 	return 1;
 }
 
-void Logging(char* errFile,char* function,int line,char* info)
+void Logging(const char* errFile,const char* function,int line, const char* info)
 {
 
 	FILE* fp = fopen(LogFilePath,"a");
@@ -82,10 +82,10 @@ unsigned long PRE_ERR_GetLastError()
 	return ErrCode;
 }
 ///Get last err informations(log the debug information)
-unsigned long PRE_ERR_GetLastError(char* filePath,char* function,int line)
+unsigned long PRE_ERR_GetLastError(const char* filePath, const char* function, int line)
 {
 	PRE_ERR_GetLastError();
-	char* fileName = strrchr(filePath,'\\');
+	const char* fileName = strrchr(filePath,'\\');
 	Logging(filePath,function,line,GetLastErrorString());
 	printf("\t@ File     : %s(Line:%d)\n\t@ Function : %s\n",fileName+1,line,function);
 	return ErrCode;
