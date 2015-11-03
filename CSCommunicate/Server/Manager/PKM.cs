@@ -79,7 +79,7 @@ namespace Server
             pkBytes = null;
             try
             {
-                MetaData file = this.Client.GetMetaData( pkFilePath_Dropbox );
+                MetaData file = this.Client.GetMetaData( pkFilePath_Dropbox, false, false );
                 if ( file == null ||
                     file.Is_Dir == true ||
                     file.Is_Deleted ||

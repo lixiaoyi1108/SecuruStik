@@ -27,6 +27,9 @@ namespace SecuruStik
 
         private static log4net.ILog log = GetClassLogger();
 
+
+        // TODO: replace below completely with log4net
+
         private readonly static String logfile = "./ErrMsg.log";
         /// <summary>
         /// Log event

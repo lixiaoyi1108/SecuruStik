@@ -69,7 +69,7 @@ namespace Server
         {
             String sharingFileDir = String.Format( "/{0}" , userID );
             StringBuilder sharingFilePath = new StringBuilder();
-            MetaData metadatas = this.Client.GetMetaData( sharingFileDir );
+            MetaData metadatas = this.Client.GetMetaData( sharingFileDir, false, false );
             List<SharingInfo> sharingInfoList = new List<SharingInfo>();
             if ( metadatas != null )
             {
@@ -82,7 +82,7 @@ namespace Server
                     try
                     {
                         Byte[] sharingInfoBytes;// = this.Client.Download( sharingFileDropboxPath );
-                        MetaData files = this.Client.GetMetaData( sharingFileDropboxPath );
+                        MetaData files = this.Client.GetMetaData( sharingFileDropboxPath, false, false );
                         if ( files == null || files.Is_Dir == true ||
                                 files.Is_Deleted || files.Bytes == 0 )
                         {

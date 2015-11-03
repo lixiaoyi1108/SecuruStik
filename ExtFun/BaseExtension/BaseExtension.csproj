@@ -124,8 +124,6 @@
     <Compile Include="ConfigHelper.cs" />
     <Compile Include="FileStringHelper.cs" />
     <Compile Include="FileTypeRegister.cs" />
-    <Compile Include="IconHelper\IconHelper.cs" />
-    <Compile Include="IconHelper\IconListManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecuruStikException.cs" />
     <Compile Include="SerializeHelper.cs" />
@@ -159,6 +157,7 @@
       <Private>False</Private>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

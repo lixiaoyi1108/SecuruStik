@@ -119,8 +119,12 @@
     <Reference Include="DevComponents.DotNetBar2">
       <HintPath>..\..\Skin\DevComponents.DotNetBar2.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
+    <Reference Include="DropNet, Version=1.10.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DropNet.1.10.23.0\lib\net40\DropNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -136,30 +140,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtFun\ConfigHelper.cs" />
-    <Compile Include="DropNet\Authenticators\OAuth2Authenticator.cs" />
-    <Compile Include="DropNet\Authenticators\OAuthAuthenticator.cs" />
-    <Compile Include="DropNet\Client\Client.cs" />
-    <Compile Include="DropNet\Client\Files.Async.cs" />
-    <Compile Include="DropNet\Client\Files.Sync.cs" />
-    <Compile Include="DropNet\Client\Files.Task.cs" />
-    <Compile Include="DropNet\Client\User.Async.cs" />
-    <Compile Include="DropNet\Client\User.Sync.cs" />
-    <Compile Include="DropNet\Exceptions\DropboxException.cs" />
-    <Compile Include="DropNet\Extensions\RestClientExtensions.cs" />
-    <Compile Include="DropNet\Extensions\StringExtensions.cs" />
-    <Compile Include="DropNet\Helpers\ChunkedUploadHelper.cs" />
-    <Compile Include="DropNet\Helpers\RequestHelper.cs" />
-    <Compile Include="DropNet\Models\AccountInfo.cs" />
-    <Compile Include="DropNet\Models\ChunkedUpload.cs" />
-    <Compile Include="DropNet\Models\ChunkedUploadProgress.cs" />
-    <Compile Include="DropNet\Models\CopyRefResponse.cs" />
-    <Compile Include="DropNet\Models\DeltaPage.cs" />
-    <Compile Include="DropNet\Models\MetaData.cs" />
-    <Compile Include="DropNet\Models\OAuth2AccessToken.cs" />
-    <Compile Include="DropNet\Models\SharesResponse.cs" />
-    <Compile Include="DropNet\Models\ThumbnailSize.cs" />
-    <Compile Include="DropNet\Models\UserLogin.cs" />
-    <Compile Include="DropNet\Properties\AssemblyInfo.cs" />
     <Compile Include="UIDesign\AuthorizeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,9 +179,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
-    <None Include="DropNet\App.config" />
-    <None Include="DropNet\obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
-    <None Include="DropNet\packages.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -221,7 +198,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="appicon.ico" />
-    <Content Include="DropNet\DropNet.csproj" />
     <Content Include="Icon\background.PNG" />
     <Content Include="Icon\Login.PNG" />
     <Content Include="Icon\Login_failed.PNG" />
@@ -249,10 +225,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DropNet\bin\Debug\" />
-    <Folder Include="DropNet\obj\Debug\TempPE\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -19,6 +19,8 @@ namespace SecuruStik.BaseExtension
 {
     public class SerializeHelper
     {
+
+        // TODO: this seems to be unused but DeSerialize does occur in the code
         public static byte[] Serialize( Object r )
         {
             try
