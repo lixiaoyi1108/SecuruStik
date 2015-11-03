@@ -66,7 +66,7 @@ char* GetLastErrorString();
  *            Failed:NULL
  * @retval	  
  */
-unsigned long PRE_ERR_GetLastError(char* filePath,char* function,int line);
+unsigned long PRE_ERR_GetLastError(const char* filePath, const char* function, int line);
 
 /**
  * @name      GetErrorString

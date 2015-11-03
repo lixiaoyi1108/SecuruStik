@@ -12,9 +12,9 @@
 	* @brief	:	
     */
 #pragma once
-#include<openssl/ec.h>
-#include<openssl/ecdsa.h>
-#include<openssl/ecdh.h>
+#include <openssl/ec.h>
+#include <openssl/ecdsa.h>
+#include <openssl/ecdh.h>
 #include "PRE_err.h"
 
 #define PRE_SUCCESS		1
@@ -48,4 +48,8 @@ typedef struct ec_SecParams_st
 
 extern SecParams *params;
 
-#define PRE_API extern "C" __declspec(dllexport)
+#ifdef _EXPORTING
+#	define PRE_API extern "C" __declspec(dllexport)
+#else
+#	define PRE_API extern "C"
+#endif

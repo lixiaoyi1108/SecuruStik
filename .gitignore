@@ -213,3 +213,7 @@ ModelManifest.xml
 SecuruStik/Contorllers/DropboxControler/DropNet/
 EncScheme/ProxyReEncryption/openSSL/
 *.swp
+.roman.vim
+.sconsign.dblite
+*.os
+*.dylib

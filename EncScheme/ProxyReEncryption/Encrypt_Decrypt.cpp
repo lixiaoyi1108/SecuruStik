@@ -11,7 +11,7 @@
 	
 	* @brief	:	Encryption & Decryption.
 	*/
-#include <openssl\crypto.h>
+#include <openssl/crypto.h>
 
 #include "PRE.h"
 #include"Setup.h"
@@ -142,7 +142,7 @@ Cipher_REKEY* ReEncrypt( PRE_REKEY *reKey,Cipher *C )
 	//C_REKEY->E
 	C_REKEY->E = (unsigned char*)OPENSSL_malloc(sizeof(char)*BLOCK_SIZE);
 	memset(C_REKEY->E,0,BLOCK_SIZE);
-	memcpy_s(C_REKEY->E,BLOCK_SIZE,C->E,BLOCK_SIZE);
+	memcpy(C_REKEY->E,C->E,BLOCK_SIZE);
 	//C_REKEY->F
 	C_REKEY->F = EC_POINT_new(params->G);
 	ret = EC_POINT_mul(params->G,C_REKEY->F,NULL,C->F,reKey->v,ctx);

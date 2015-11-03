@@ -1,0 +1,41 @@
+# vi:ft=python
+
+import os
+import platform
+
+
+# -- imported from scutil.py
+def prepend_environ(env, key, val):
+	'Only for the system env variables, not scons'
+	d = env['ENV']
+	sep = ';' if platform.system() == 'Windows' else ':'
+	if key in d:
+		d[key] = val + sep + d[key]
+	else:
+		d[key] = val + sep
+	return d[key]
+
+
+def pkgconfig_import_all(env, pc):
+	env.ParseConfig('pkg-config {} --libs --cflags'.format(pc))
+
+# -- /end  imported from scutil.py
+
+def allfiles_except(glob, *subtracts):
+    res = set(map(unicode, env.Glob(glob)))
+    for i in subtracts:
+        res -= set(i)
+    return list(res)
+
+
+env = Environment()
+
+prepend_environ(env, 'PKG_CONFIG_PATH', '/usr/local/opt/openssl/lib/pkgconfig')
+pkgconfig_import_all(env, 'libcrypto')
+
+
+MAIN_SRC_FILES = allfiles_except('*.cpp', ['UnitTest.cpp'])
+
+env.Append(CXXFLAGS=['-m32'])
+env.Append(LINKFLAGS=['-m32'])
+env.SharedLibrary('PREC', MAIN_SRC_FILES)

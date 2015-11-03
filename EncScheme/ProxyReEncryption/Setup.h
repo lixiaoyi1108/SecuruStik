@@ -14,6 +14,7 @@
 #pragma once
 #include "PRE.h"
 #include <openssl/ec.h>
+
 // Hash(Ellipic point => binary string)
 unsigned char* Hash_point2bin(const EC_POINT *point);
 

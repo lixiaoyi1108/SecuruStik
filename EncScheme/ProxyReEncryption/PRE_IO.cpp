@@ -13,8 +13,26 @@
 	*/
 #include"PRE_IO.h"
 #include"PRE.h"
-#include <direct.h>
 #include <string.h>
+
+#ifdef _WIN32
+#	include <direct.h>
+
+// 0 means error
+int PRE_mkdir(const char *name) {
+	if (_mkdir(name) == 0) return 1;
+	else return 0;
+}
+
+#else
+#	include <sys/stat.h>
+
+// 0 means error
+int PRE_mkdir(const char *name) {
+	if (mkdir(name, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0) return 1;
+	else return 0;
+}
+#endif
 
 // DELETE
 int sizeOfInt = sizeof(int);
@@ -40,7 +58,7 @@ int PRE_IO_printBlock(char *m)
 }
 int PRE_IO_printBlock_ln(char *m)
 {
-	if( NULL == PRE_IO_printBlock(m))
+	if( 0 == PRE_IO_printBlock(m))
 		return 0;
 	printf("\n");
 	return 1;
@@ -59,7 +77,7 @@ int PRE_IO_printBlock_hex(char *m,size_t size)
 
 int PRE_IO_printBlock_hex_ln(char *m,size_t size)
 {
-	if( NULL == PRE_IO_printBlock_hex(m,size))
+	if( 0 == PRE_IO_printBlock_hex(m,size))
 		return 0;
 	printf("\n");
 	return 1;
@@ -181,7 +199,7 @@ void PRE_IO_key2file(char* fullPath,unsigned char *key,PRE_KEY *key1,PRE_KEY *ke
 void PRE_IO_key2file(char* dir,char* fileName,unsigned char *key,PRE_KEY *key1,PRE_KEY *key2)
 {
 	FILE *fp;
-	if( 0 == mkdir(dir) ||
+	if( 0 == PRE_mkdir(dir) ||
 		NULL == ( fp = fopen(fileName,"wb+") ))
 		exit(1);
 
